@@ -1,27 +1,23 @@
-name: "CodeQL Analysis"
+name: Code & Secret Scanning
 
 on:
   push:
-    branches: [ "main" ]        # Change to your default branch if different
+    branches: [ main ]
   pull_request:
-    branches: [ "main" ]
-  schedule:
-    - cron: '30 1 * * 0'        # Weekly scheduled scan (Sunday 1:30 AM UTC)
+    branches: [ main ]
 
 jobs:
-  codeql:
-    name: Analyze
+  codeql-analysis:
+    name: CodeQL Code Scanning
     runs-on: ubuntu-latest
     permissions:
       actions: read
       contents: read
       security-events: write
-
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'javascript', 'typescript' ]  # Languages to scan for XSS and other issues
-
+        language: [ 'javascript', 'typescript', 'python', 'java' ]  # adjust languages as needed
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -30,7 +26,6 @@ jobs:
         uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
-          # Use the security query suite which includes XSS detection queries
           queries: security-and-quality
 
       - name: Autobuild
@@ -38,3 +33,24 @@ jobs:
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
+
+  secret-scanning:
+    name: Secret Scanning with Whispers
+    runs-on: ubuntu-latest
+    needs: codeql-analysis
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Whispers secret scanner
+        run: sudo pip install whispers
+
+      - name: Run Whispers scanner
+        run: whispers ${{ github.workspace }} > /tmp/scan_output.json
+
+      - name: Upload scan results artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: secret-scan-results
+          path: /tmp/scan_output.json
+          retention-days: 7
