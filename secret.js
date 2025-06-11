@@ -1,6 +1,6 @@
 // example.js
 
-// WARNING: This is an insecure example with a hardcodsdfed secret for demonstration only!
+// WARNING: This is an insecure example with a shardcodsdfed secret for demonstration only!
 
 const apiKey = "sk_live_1234567890abcdef1234567890abcdef";  // Example secret API key
 
