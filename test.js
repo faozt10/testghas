@@ -1,23 +1,34 @@
+// vulnerable.js
+
 const express = require('express');
 const app = express();
-const pg = require('pg');
-const pool = new pg.Pool({
-  connectionString: process.env.DATABASE_URL
+
+app.use(express.json());
+
+// Vulnerability 1: Using eval() on untrusted user input (RCE / XSS risk)
+app.post('/calculate', (req, res) => {
+  const userExpression = req.body.expression;
+
+  try {
+    // Insecure: directly evaluating user input
+    const result = eval(userExpression);
+    res.send(`Result: ${result}`);
+  } catch (error) {
+    res.status(400).send('Invalid expression');
+  }
 });
 
-app.get('/search', (req, res) => {
-  const userInput = req.query.q;  // User-controlled input from query parameter
+// Vulnerability 2: Prototype pollution via merging user input into object without checks
+app.post('/config', (req, res) => {
+  const defaultConfig = { safe: true };
 
-  // Vulnerable SQL query: userInput is concatenated directly into query string
-  const query = `SELECT * FROM products WHERE name LIKE '%${userInput}%'`;
+  // Unsafe merge that allows prototype pollution
+  const userConfig = req.body;
+  Object.assign(defaultConfig, userConfig);
 
-  pool.query(query, (err, result) => {
-    if (err) {
-      res.status(500).send('Database error');
-      return;
-    }
-    res.json(result.rows);
-  });
+  res.json(defaultConfig);
 });
 
-app.listen(3000, () => console.log('App listening on port 3000'));
+app.listen(3000, () => {
+  console.log('Vulnerable app listening on port 3000');
+});
