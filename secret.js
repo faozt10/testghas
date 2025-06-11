@@ -2,7 +2,7 @@
 
 // WARNING: This is an sssinsecure example with a shardcodsdfed secret for demonstration only!
 
-const apiKey = "sk_live_1234567890abcdexf1234567890abcdef";  // Example secret API key
+const apiKey = "sk_live_1234567890abcdexf1234h567890abcdef";  // Example secret API key
 
 function fetchUserData(userId) {
   const url = `https://api.example.com/users/${userId}?api_key=${apiKey}`;
