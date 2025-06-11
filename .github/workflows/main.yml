@@ -1,0 +1,42 @@
+name: Secret Scanning on Code and Issues
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  issues:
+    types: [opened, edited]
+
+jobs:
+  secret-scanning-review:
+    name: Secret Scanning Review on Code
+    runs-on: ubuntu-latest
+    if: github.event_name != 'issues'  # Run only on push and PR events
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Secret Scanning Review Action
+        uses: advanced-security/secret-scanning-review-action@v1
+        with:
+          token: ${{ secrets.SECRET_SCAN_REVIEW_GITHUB_TOKEN }}
+          fail-on-alert: true
+          fail-on-alert-exclude-closed: true
+          runtime: 'python'  # or 'powershell'
+
+  secret-scanning-issues:
+    name: Secret Scanning on Issue Content
+    runs-on: ubuntu-latest
+    if: github.event_name == 'issues'  # Run only on issue events
+    steps:
+      - name: Check issue body for secrets
+        uses: github/codeql-action/analyze@v3
+        with:
+          # This is a placeholder; GitHub does not natively scan issue bodies for secrets via CodeQL.
+          # Instead, you can run a third-party scanner or custom script here.
+          # For demonstration, we echo the issue body.
+          script: |
+            echo "Issue title: ${{ github.event.issue.title }}"
+            echo "Issue body: ${{ github.event.issue.body }}"
+            # Add your secret scanning logic here, e.g., call an API or run a scanner CLI tool.
