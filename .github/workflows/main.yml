@@ -1,4 +1,4 @@
-name: Secret Scanning Review
+name: Secret Scanning on Code Changes
 
 on:
   push:
@@ -10,15 +10,16 @@ on:
 
 jobs:
   secret-scanning-review:
+    name: Secret Scanning Review
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Run Secret Scanning Review Action
         uses: advanced-security/secret-scanning-review-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          fail-on-alert: false               # Do not fail the workflow, just report alerts
-          fail-on-alert-exclude-closed: true
-          runtime: 'python'                  # or 'powershell'
+          fail-on-alert: false           # Set true to fail workflow on secret detection
+          fail-on-alert-exclude-closed: false
+          runtime: python                # or 'powershell'
