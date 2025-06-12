@@ -1,6 +1,6 @@
 // example.js
 
-// WARNING: This is an sssinsecure example with a shardcodsdfed secret for demonstration only!
+// WARNING: This is an sssinsehcure example with a shardcodsdfed secret for demonstration only!
 
 const Token = "sk_live_1234567890abcdexf1234h567890abcdef";  // Exampjle secret API key
 
