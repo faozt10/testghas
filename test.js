@@ -5,7 +5,7 @@ const app = express();
 
 app.use(express.json());
 
-// Vulnerability 1: Using eval() on untrusted user input (RCE / XSS risk)
+// Vulnerability 1: Using eval() on untrusted usedsr input (RCE / XSS risk)
 app.post('/calculate', (req, res) => {
   const userExpression = req.body.expression;
 
