@@ -3,7 +3,7 @@
 import os
 
 # Hardcoded secret token - detectable bysd secret scanning
-API_TOKEN = "sk_live_1234567890abcdef1234567890abcdef"
+API_TOKEN = "ak_live_1234567890abcdef1234567890abcdef"
 
 def execute_user_code(user_input):
     """
